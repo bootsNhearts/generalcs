@@ -26,41 +26,49 @@ namespace ST_06e16ab20f7c4437825f285c425dad29
             cm = Dts.Connections["voxsql01.ClientData"];
             conn = (System.Data.SqlClient.SqlConnection)cm.AcquireConnection(null);
 
-            string filepath = @"G:\HRUploads\CIBC\Completed";
-            DirectoryInfo d = new DirectoryInfo(filepath);
-            FileInfo[] Files = d.GetFiles("*.csv");
-            
-            foreach (FileInfo file in Files)
+            // string filepath = @"G:\HRUploads\CIBC\Completed";
+            string[] clients = new string[]{
+                "AIT_CAN", "BCIT", "CARPENTER", "CIBC", "CLEVELANDCLINIC", "CLIFFS", "ERIE", "FHA", "FISHEL",
+                "HOMEX", "IDEX", "KANTAR", "KENNAMETAL", "KINGANDSPALDING", "LINCOLNELECTRIC", "SOFINA", "SUNOVION",
+                "TRINITY", "USAA", "VPP", "WESTFIELD", "WPP"
+            };
+            foreach (string client in clients)
             {
-                string fileName = file.Name;
-                string runDate = "";
-                long fileSize = file.Length;
+                string filepath = @"G:\HRUploads\" + client + @"\Completed";
+                DirectoryInfo d = new DirectoryInfo(filepath);
+                FileInfo[] Files = d.GetFiles("*.csv");
                 
-                try
+                foreach (FileInfo file in Files)
                 {
-                    //runDate = fileName.Substring(file.Name.Length - 14, 10);
-                    Regex r = new Regex(@"\d{2}-\d{2}-\d{4}");
-                    Match m = r.Match(fileName);
-                    if (m.Success)
+                    string fileName = file.Name;
+                    string runDate = "";
+                    long fileSize = file.Length;
+                    
+                    try
                     {
-                        runDate = m.Value;
-                        Convert.ToDateTime(runDate).ToString("yyyy-mm-dd");
+                        //runDate = fileName.Substring(file.Name.Length - 14, 10);
+                        Regex r = new Regex(@"\d{2}-\d{2}-\d{4}");
+                        Match m = r.Match(fileName);
+                        if (m.Success)
+                        {
+                            runDate = m.Value;
+                            Convert.ToDateTime(runDate).ToString("yyyy-mm-dd");
+                        }
+                        com = new System.Data.SqlClient.SqlCommand(
+                            $"INSERT INTO ClientData.dbo.file_monitor " +
+                            $"(filesize, client, filename, filedate, file_path) VALUES('{fileSize}', '{client}', '{fileName}', '{runDate}', '{filepath}')", conn);
+                        com.ExecuteNonQuery();
                     }
-                    com = new System.Data.SqlClient.SqlCommand(
-                        $"INSERT INTO ClientData.dbo.file_monitor " +
-                        $"(filesize, client, filename, filedate, file_path) VALUES('{fileSize}', 'CIBC', '{fileName}', '{runDate}', '{filepath}')", conn);
-                    com.ExecuteNonQuery();
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                    //finally
+                    //{
+                    //    cm.ReleaseConnection(conn);
+                    //}
                 }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-                //finally
-                //{
-                //    cm.ReleaseConnection(conn);
-                //}
             }
-
             cm.ReleaseConnection(conn);
             //Dts.TaskResult = (int)ScriptResults.Success;
 		}
