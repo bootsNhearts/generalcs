@@ -67,11 +67,11 @@ namespace ST_06e16ab20f7c4437825f285c425dad29
                     //{
                     //    cm.ReleaseConnection(conn);
                     //}
+                    }
                 }
-            }
             cm.ReleaseConnection(conn);
             //Dts.TaskResult = (int)ScriptResults.Success;
-		}
+	}
 
         #region ScriptResults declaration
         /// <summary>
