@@ -23,18 +23,16 @@ namespace ST_06e16ab20f7c4437825f285c425dad29
             System.Data.SqlClient.SqlConnection conn;
             System.Data.SqlClient.SqlCommand com;
 
-            cm = Dts.Connections["voxsql01.ClientData"];
+            cm = Dts.Connections["~"];
             conn = (System.Data.SqlClient.SqlConnection)cm.AcquireConnection(null);
 
-            // string filepath = @"G:\HRUploads\CIBC\Completed";
+            // string filepath = @"~";
             string[] clients = new string[]{
-                "AIT_CAN", "BCIT", "CARPENTER", "CIBC", "CLEVELANDCLINIC", "CLIFFS", "ERIE", "FHA", "FISHEL",
-                "HOMEX", "IDEX", "KANTAR", "KENNAMETAL", "KINGANDSPALDING", "LINCOLNELECTRIC", "SOFINA", "SUNOVION",
-                "TRINITY", "USAA", "VPP", "WESTFIELD", "WPP"
+                "xxx"
             };
             foreach (string client in clients)
             {
-                string filepath = @"G:\HRUploads\" + client + @"\Completed";
+                string filepath = @"~\" + client + @"~";
                 DirectoryInfo d = new DirectoryInfo(filepath);
                 FileInfo[] Files = d.GetFiles("*.csv");
                 
